@@ -1,0 +1,110 @@
+$animation-type: linear;
+$animation-speed: 175ms;
+
+Game {
+    align: left top;
+    layers: gameplay messages;
+}
+
+GameLayout {
+    layer: gameplay;
+}
+
+GameHeader {
+    background: $primary-background;
+    color: $text;
+    height: 1;
+    dock: top;
+    layer: gameplay;
+}
+
+GameHeader #app-title {
+    width: 40%;
+}
+
+GameHeader #moves {
+    width: 20%;
+}
+
+GameHeader #remaining-undo {
+    width: 20%;
+}
+
+GameHeader #time {
+    width: 20%;
+}
+
+Footer {
+    height: 1;
+    dock: bottom;
+    layer: gameplay;
+}
+
+WinnerMessage {
+    width: 60;
+    height: auto;
+
+    dock: top;
+    offset-x: 50%;
+    offset-y: 20%;
+    margin-left: -30;
+
+    visibility: hidden;
+
+    layer: messages;
+    align: center middle;
+
+    background: $success;
+    color: $text;
+    border: round;
+    padding: 2;
+
+    #winner-name {
+        border: tall $success 60%;
+    }
+
+    #winner-text {
+        text-align: center;
+        content-align: center middle;
+    }
+}
+
+#button-group {
+    layout: horizontal;
+}
+
+.visible {
+    visibility: visible;
+}
+
+Help {
+    border: round $primary-lighten-3;
+}
+
+CardHolder {
+    width: auto;
+    height: 6;
+}
+
+CardHolder.invisible {
+    border: none;
+    background: transparent;
+    color: transparent;
+}
+
+StashWaste {
+    width: 32;
+}
+
+Foundation {
+    width: 32;
+}
+
+Card {
+    width: auto;
+    height: auto;
+}
+
+Tableau {
+    width: 64;
+}
