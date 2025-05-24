@@ -37,7 +37,7 @@ class Leaderboard(Screen):
 
             table.add_row(player_name, moves, f"{hours:02,.0f}:{minutes:02.0f}:{seconds:05.2f}", date_player)
 
-        table.sort(keys[1], reverse=True)
+        table.sort(keys[1])
         yield table
 
         yield Footer()
