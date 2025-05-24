@@ -28,9 +28,7 @@ class ModeSelectionScreen(Screen):
         self.game_state_manager = game_state_manager
         self.database_manager = database_manager
         
-        base_path = Path(__file__).resolve().parent.parent
-        sound_path = base_path / "sounds" / "lobby.mp3"
-        Sound(str(sound_path)).play(-1)
+        Sound("./sounds/lobby.mp3").play(-1)
 
     def compose(self) -> ComposeResult:
         with Middle():

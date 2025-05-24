@@ -21,15 +21,15 @@ class WinnerMessage(Widget):
     """
     Represents the winner message displayed after completing the game.
 
-    This class is responsible for presenting the winning message, collecting the player's 
-    name, and saving the player's score to the database. It also handles playing the 
+    This class is responsible for presenting the winning message, collecting the player's
+    name, and saving the player's score to the database. It also handles playing the
     winning sound and interacting with the game state and database managers.
 
     :ivar game_state_manager: Manages the current state of the game.
     :ivar database_manager: Handles database operations, including saving scores.
     :ivar moves: Tracks the number of moves taken to win, reactive attribute.
     """
-    
+
     moves = reactive(0, recompose=True)
 
     def __init__(self, database_manager: DatabaseManager, game_state_manager: GameStateManager):
@@ -65,9 +65,7 @@ class WinnerMessage(Widget):
         return "" if value == 1 else "s"
 
     def show(self, moves: int) -> None:
-        base_path = Path(__file__).resolve().parent
-        sound_path = base_path / "sounds" / "winscreen.ogg"
-        Sound(str(sound_path)).play()
+        Sound("./sounds/winscreen.ogg").play()
         self.moves = moves
         self.add_class("visible")
         time_display: TimeDisplay = self.screen.query_one(TimeDisplay)

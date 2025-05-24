@@ -78,9 +78,7 @@ class Game(Screen):
         yield GameLayout()
         yield Footer()
         yield WinnerMessage(Pasjans.database_manager, self.game_state_manager)
-        base_path = Path(__file__).resolve().parent
-        sound_path = base_path / "sounds" / "shuffle.ogg"
-        Sound(str(sound_path)).play()
+        Sound("sounds/shuffle.ogg").play()
 
     def action_undo(self) -> None:
         self.game_state_manager.undo_last_operation(self.screen)
@@ -96,9 +94,7 @@ class Game(Screen):
     @staticmethod
     def on_post_move_event(screen: Screen) -> None:
         """Used for checking if game is won, and move count tracker"""
-        base_path = Path(__file__).resolve().parent
-        sound_path = base_path / "sounds" / "flip.ogg"
-        Sound(str(sound_path)).play()
+        Sound("sounds/flip.ogg").play()
         game_header: GameHeader = screen.query_one(GameHeader)
         game_header.moves += 1
 
