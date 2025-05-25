@@ -35,10 +35,10 @@ class Card(Widget):
         self.value = value
         self.hidden = hidden
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.suit}{self.value}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.suit}{self.value}"
 
     def copy(self) -> Card:
@@ -76,11 +76,11 @@ class Card(Widget):
         controller = ServiceLocator.get(CardInteractController)
         controller.handle_card_click(self)
 
-    def hide(self):
+    def hide(self) -> None:
         self.hidden = True
         self.refresh()
 
-    def unhide(self):
+    def unhide(self) -> None:
         self.hidden = False
         self.refresh()
 

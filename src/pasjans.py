@@ -156,7 +156,7 @@ class Pasjans(App[None]):
     SCREENS = {"help": Help}
     TITLE = "Pasjans Gigathon"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         ServiceLocator.register(DatabaseManager, DatabaseManager())
         ServiceLocator.register(GameStateManager, GameStateManager())

@@ -19,7 +19,7 @@ class ModeSelectionScreen(Screen):
     difficulty.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         Sound("./sounds/lobby.mp3").play(-1)
 

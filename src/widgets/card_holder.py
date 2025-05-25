@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from rich.console import ConsoleRenderable, RichCast, RenderableType
 from rich.panel import Panel
+from textual.visual import Visual, SupportsVisual
 from textual.widget import Widget
 
 from controllers.card_interact_controller import CardInteractController
@@ -39,7 +41,7 @@ class CardHolder(Widget):
     def copy(self) -> CardHolder:
         return CardHolder(self.has_class("invisible"))
 
-    def render(self):
+    def render(self) -> RenderableType:
         from managers.theme_manager import ThemeManager
 
         box = ThemeManager.get_box()

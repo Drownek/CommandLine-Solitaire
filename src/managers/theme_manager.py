@@ -52,7 +52,7 @@ class ThemeManager:
 
         start_time = time.time()
 
-        def update_rainbow_colors():
+        def update_rainbow_colors() -> None:
             if ThemeManager.current_theme == "rainbow":
                 cards = list(screen.query(Card))
                 total_cards = len(cards)
@@ -112,7 +112,7 @@ class ThemeManager:
         return f"#{r:02x}{g:02x}{b:02x}"
 
     @staticmethod
-    def stop_rainbow_animation():
+    def stop_rainbow_animation() -> None:
         if ThemeManager.rainbow_timer:
             ThemeManager.rainbow_timer.stop()
             ThemeManager.rainbow_timer = None

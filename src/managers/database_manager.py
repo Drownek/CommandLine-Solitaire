@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+from sqlite3 import Connection
 from typing import List, Tuple
 
 # Path to the SQLite database file where scores will be stored.
@@ -47,7 +48,7 @@ class DatabaseManager:
         self.db_path = db_path
         self._ensure_db()
 
-    def _connect(self):
+    def _connect(self) -> Connection:
         """
         Establish a connection to the SQLite database.
 
@@ -55,7 +56,7 @@ class DatabaseManager:
         """
         return sqlite3.connect(self.db_path)
 
-    def _ensure_db(self):
+    def _ensure_db(self) -> None:
         """
         Ensure the `scores` table exists in the database. If it does not exist, it will be created.
         """
