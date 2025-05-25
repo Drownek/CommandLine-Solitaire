@@ -34,11 +34,13 @@ class CardHolder(Widget):
 
     def render(self):
         from managers.theme_manager import ThemeManager
+        box = ThemeManager.get_box()
+        assert box is not None
         return Panel.fit(
             "    ",
             border_style="dim",
             style="dim",
-            box=ThemeManager.get_box(),
+            box=box,
         )
 
     def on_click(self) -> None:

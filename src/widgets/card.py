@@ -62,6 +62,8 @@ class Card(Widget):
         else:
             border_box = ThemeManager.get_box()
 
+        assert border_box is not None
+
         return Panel.fit(
             content,
             border_style=self.color,

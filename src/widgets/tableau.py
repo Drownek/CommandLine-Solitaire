@@ -24,7 +24,7 @@ class Tableau(HorizontalGroup):
 
     def __init__(self, piles: list[Pile]):
         super().__init__()
-        self.piles: list[Pile] = piles
+        self.piles = piles
 
     def compose(self) -> ComposeResult:
         for pile in self.piles:

@@ -1,6 +1,7 @@
 import time
 
 from rich import box
+from rich.box import Box
 from textual.screen import Screen
 from textual.timer import Timer
 
@@ -116,17 +117,19 @@ class ThemeManager:
             ThemeManager.rainbow_timer = None
 
     @staticmethod
-    def get_box() -> box:
+    def get_box() -> Box | None:
         match ThemeManager.current_theme:
             case "default" | "rainbow":
                 return box.ROUNDED
             case "ascii":
                 return box.ASCII
+        return None
 
     @staticmethod
-    def get_selected_box() -> box:
+    def get_selected_box() -> Box | None:
         match ThemeManager.current_theme:
             case "default" | "rainbow":
                 return box.HEAVY
             case "ascii":
                 return box.HEAVY
+        return None
