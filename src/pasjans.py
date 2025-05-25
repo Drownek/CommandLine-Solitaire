@@ -10,6 +10,7 @@ from textual.screen import Screen
 from textual.widget import Widget
 from textual.widgets import Label, Footer
 
+from constants import MAX_UNDO
 from controllers.card_interact_controller import CardInteractController
 from controllers.service_locator import ServiceLocator
 from managers.database_manager import DatabaseManager
@@ -38,8 +39,8 @@ class GameHeader(Widget):
     :ivar moves: Tracks the number of moves performed by the player.
     """
 
-    remaining_undo = reactive(3)
-    moves = reactive(0)
+    remaining_undo = reactive(MAX_UNDO, recompose=True)
+    moves = reactive(0, recompose=True)
 
     def compose(self) -> ComposeResult:
         with Horizontal():
