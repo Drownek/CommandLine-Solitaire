@@ -20,29 +20,64 @@ class GameLayout(VerticalGroup):
     """
 
     def compose(self) -> ComposeResult:
-        deck: list[Card] = self.create_deck()
+        """Compose the game layout with tableau and stash."""
+
+        # Create and shuffle the deck
+        deck = self.create_deck()
         shuffle(deck)
+
+        # Create tableau piles
+        tableau_piles = self._create_tableau_piles(deck)
+
+        # Prepare stash with remaining cards
+        remaining_cards = self._prepare_stash(deck)
+
+        yield TopContainer(remaining_cards)
+        yield Tableau(tableau_piles)
+
+    def _create_tableau_piles(
+        self, deck: list[Card], pile_count: int = 7
+    ) -> list[Pile]:
+        """Create tableau piles with cards distributed according to solitaire rules.
+
+        Args:
+            deck: The deck of cards to distribute from
+            pile_count: Number of piles to create
+
+        Returns:
+            List of tableau piles with cards distributed
+        """
         piles: list[Pile] = []
 
-        for i in range(7):
-            cards: list[Card] = []
+        for pile_index in range(pile_count):
+            cards_for_pile: list[Card] = []
+            cards_in_pile = pile_index + 1
 
-            for j in range(i + 1):
+            for card_index in range(cards_in_pile):
                 card = deck.pop()
-                if j != i:
+                # Only the top card in each pile is visible
+                if card_index != pile_index:
                     card.hide()
-                cards.append(card)
+                cards_for_pile.append(card)
 
             pile = Pile()
-            pile.cards = cards
+            pile.cards = cards_for_pile
             piles.append(pile)
 
-        stash: list[Card] = deck
-        for card in stash:
-            card.hide()
+        return piles
 
-        yield TopContainer(stash)
-        yield Tableau(piles)
+    def _prepare_stash(self, deck: list[Card]) -> list[Card]:
+        """Prepare the stash with remaining cards from the deck.
+
+        Args:
+            deck: The remaining cards after tableau distribution
+
+        Returns:
+            The prepared stash with all cards hidden
+        """
+        for card in deck:
+            card.hide()
+        return deck
 
     @staticmethod
     def create_deck() -> list[Card]:
