@@ -67,6 +67,7 @@ class Pile(Vertical):
 
     def unselect_cards(self) -> None:
         from widgets.card import Card
+
         card: Card
         for card in self.cards:
             card.make_unselected()

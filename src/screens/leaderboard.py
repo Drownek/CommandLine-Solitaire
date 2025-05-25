@@ -13,7 +13,7 @@ class Leaderboard(Screen):
     player name, number of moves, time taken, and the date played. The data
     is retrieved from the database and displayed in a sorted table format.
     """
-    
+
     BINDINGS = [Binding("n", "back", "Back")]
 
     def compose(self) -> ComposeResult:
@@ -31,7 +31,12 @@ class Leaderboard(Screen):
             minutes, seconds = divmod(time_seconds, 60)
             hours, minutes = divmod(minutes, 60)
 
-            table.add_row(player_name, moves, f"{hours:02,.0f}:{minutes:02.0f}:{seconds:05.2f}", date_player)
+            table.add_row(
+                player_name,
+                moves,
+                f"{hours:02,.0f}:{minutes:02.0f}:{seconds:05.2f}",
+                date_player,
+            )
 
         table.sort(keys[1])
         yield table
@@ -40,5 +45,6 @@ class Leaderboard(Screen):
 
     def action_back(self) -> None:
         from screens.mode_selection import ModeSelectionScreen
+
         self.screen.app.push_screen(ModeSelectionScreen())
 

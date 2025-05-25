@@ -12,7 +12,7 @@ class ThemeManager:
     """
     Handles theme switching and animations for the game's UI components.
 
-    This class provides methods to change themes, manage animations, and 
+    This class provides methods to change themes, manage animations, and
     update UI layouts accordingly.
     """
 
@@ -43,7 +43,7 @@ class ThemeManager:
     def start_rainbow_animation(screen: Screen):
         """
         Starts the rainbow animation for the cards.
-        
+
         Creates dynamic color effects by updating card colors at regular intervals.
         """
         from widgets.card import Card
@@ -66,9 +66,11 @@ class ThemeManager:
 
                     for i, card in enumerate(cards):
                         card_position = i / max(1, total_cards - 1)
-                        
-                        phase = (elapsed_time * wave_speed + card_position * wave_length) % 1.0
-                        
+
+                        phase = (
+                            elapsed_time * wave_speed + card_position * wave_length
+                        ) % 1.0
+
                         card.color = ThemeManager.get_rainbow_color_with_phase(phase)
                         card.refresh()
 
@@ -78,7 +80,7 @@ class ThemeManager:
     def get_rainbow_color_with_phase(phase: float) -> str:
         """
         Calculates a rainbow color based on the provided phase.
-        
+
         :param phase: A float representing the phase in the color cycle (0.0 to 1.0).
         :return: A hex color string.
         """
@@ -108,7 +110,6 @@ class ThemeManager:
         r, g, b = [int((val + m) * 255) for val in (r, g, b)]
 
         return f"#{r:02x}{g:02x}{b:02x}"
-
 
     @staticmethod
     def stop_rainbow_animation():

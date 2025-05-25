@@ -11,6 +11,7 @@ from widgets.card_holder import CardHolder
 if TYPE_CHECKING:
     from widgets.card import Card
 
+
 class Foundation(HorizontalGroup):
     """
     Represents a foundation in a card game.
@@ -25,7 +26,9 @@ class Foundation(HorizontalGroup):
         None in the list represents an empty place in the foundation.
     """
 
-    cards: reactive[list[Card | None]] = reactive([None, None, None, None], recompose=True)
+    cards: reactive[list[Card | None]] = reactive(
+        [None, None, None, None], recompose=True
+    )
 
     def __init__(self, cards: list[Card | None] | None = None):
         super().__init__()

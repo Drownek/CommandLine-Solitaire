@@ -24,7 +24,12 @@ class CardHolder(Widget):
     :ivar foundation_index: Index in the foundation if the card holder belongs to a foundation.
     """
 
-    def __init__(self, invisible: bool = False, pile: Pile | None = None, foundation_index: int | None = None):
+    def __init__(
+        self,
+        invisible: bool = False,
+        pile: Pile | None = None,
+        foundation_index: int | None = None,
+    ):
         super().__init__()
         self.pile = pile
         self.foundation_index = foundation_index
@@ -36,6 +41,7 @@ class CardHolder(Widget):
 
     def render(self):
         from managers.theme_manager import ThemeManager
+
         box = ThemeManager.get_box()
         assert box is not None
         return Panel.fit(

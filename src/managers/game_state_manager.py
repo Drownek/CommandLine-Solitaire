@@ -7,6 +7,7 @@ from widgets.foundation import Foundation
 from widgets.stash_waste import StashWaste
 from widgets.tableau import Pile, Tableau
 
+
 class GameStateManager:
     """
     Manages the game state by allowing operations such as undoing the last move.
@@ -23,9 +24,9 @@ class GameStateManager:
     def undo_last_operation(screen: Screen) -> None:
         """
         Undo the last operation performed during the game.
-    
-        This method reverts the game state to the most recent one stored in the 
-        `previous_states` stack. It also updates the number of moves performed 
+
+        This method reverts the game state to the most recent one stored in the
+        `previous_states` stack. It also updates the number of moves performed
         and checks for undo limits. The affected components include the foundation,
         tableau, stash, and waste piles.
         """
@@ -84,12 +85,18 @@ class GameState:
     :ivar piles: A list of `Pile` objects representing tableau cards in the game.
     :ivar stash: A list of `Card` objects representing the current stash in the game.
     :ivar waste: A list of `Card` objects representing the waste pile in the game.
-    :ivar foundation: A list of `Card` objects or None for representing the state 
+    :ivar foundation: A list of `Card` objects or None for representing the state
         of the foundation.
     """
 
-    def __init__(self, screen: Screen, piles: list[Pile], stash: list[Card], waste: list[Card],
-                 foundation: list[Card | None]):
+    def __init__(
+        self,
+        screen: Screen,
+        piles: list[Pile],
+        stash: list[Card],
+        waste: list[Card],
+        foundation: list[Card | None],
+    ):
         self.screen = screen
         self.piles = piles
         self.stash = stash

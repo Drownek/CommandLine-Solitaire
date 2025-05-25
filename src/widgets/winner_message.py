@@ -27,9 +27,13 @@ class WinnerMessage(Widget):
     moves = reactive(0, recompose=True)
 
     def compose(self) -> ComposeResult:
-        yield Static(f"🎉 W I N N E R ! 🎉\n\nYou solved pasjans in {self.moves} move{self._plural(self.moves)}.\n\n",
-                     id="winner-text")
-        yield Input(placeholder="Player name", id="winner-name", validators=Length(4, 16))
+        yield Static(
+            f"🎉 W I N N E R ! 🎉\n\nYou solved pasjans in {self.moves} move{self._plural(self.moves)}.\n\n",
+            id="winner-text",
+        )
+        yield Input(
+            placeholder="Player name", id="winner-name", validators=Length(4, 16)
+        )
         with Center():
             yield Button("Save score", id="save-score")
 

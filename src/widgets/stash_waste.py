@@ -10,7 +10,8 @@ from widgets.card_holder import CardHolder
 
 if TYPE_CHECKING:
     from widgets.card import Card
-    
+
+
 class StashWaste(HorizontalGroup):
     """
     Represents a group of card stacks, including a stash and a waste pile, for managing
