@@ -39,6 +39,11 @@ class GameHeader(Widget):
     :ivar moves: Tracks the number of moves performed by the player.
     """
 
+    def __init__(self, infinite_undo: bool):
+        super().__init__()
+        if infinite_undo:
+            self.remaining_undo = 9999
+
     remaining_undo = reactive(MAX_UNDO, recompose=True)
     moves = reactive(0, recompose=True)
 
@@ -61,10 +66,11 @@ class Game(Screen):
     and determining the game's completion.
     """
 
-    def __init__(self, easy_mode: bool):
+    def __init__(self, easy_mode: bool, infinite_undo: bool):
         super().__init__()
         ServiceLocator.register(CardInteractController, CardInteractController(self.screen, easy_mode))
         self.easy_mode = easy_mode
+        self.infinite_undo = infinite_undo
 
     BINDINGS = [
         Binding("n", "new_game", "New Game"),
@@ -75,7 +81,7 @@ class Game(Screen):
     ]
 
     def compose(self) -> ComposeResult:
-        yield GameHeader()
+        yield GameHeader(self.infinite_undo)
         yield GameLayout()
         yield Footer()
         yield WinnerMessage()

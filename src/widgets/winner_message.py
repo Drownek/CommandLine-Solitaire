@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 from pygame.mixer import Sound
 from textual import on
 from textual.app import ComposeResult
@@ -12,10 +10,9 @@ from textual.widget import Widget
 from textual.widgets import Static, Input, Button
 
 from controllers.service_locator import ServiceLocator
-from managers.game_state_manager import GameStateManager
+from managers.database_manager import DatabaseManager
 from screens.leaderboard import Leaderboard
 from widgets.time_display import TimeDisplay
-from managers.database_manager import DatabaseManager
 
 
 class WinnerMessage(Widget):

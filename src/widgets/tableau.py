@@ -20,7 +20,7 @@ class Tableau(HorizontalGroup):
     :ivar piles: A list of `Pile` objects that the tableau manages.
     """
 
-    piles: reactive[list[Pile]] = reactive([], recompose=True)
+    piles = reactive([], recompose=True)
 
     def __init__(self, piles: list[Pile]):
         super().__init__()

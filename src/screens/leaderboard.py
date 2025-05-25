@@ -5,7 +5,6 @@ from textual.widgets import DataTable, Footer
 
 from controllers.service_locator import ServiceLocator
 from managers.database_manager import DatabaseManager
-from managers.game_state_manager import GameStateManager
 
 
 class Leaderboard(Screen):

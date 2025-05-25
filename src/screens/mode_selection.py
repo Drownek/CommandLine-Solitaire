@@ -6,7 +6,7 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Middle, Center
 from textual.screen import Screen
-from textual.widgets import Label, Button
+from textual.widgets import Label, Button, Checkbox
 
 from screens.leaderboard import Leaderboard
 
@@ -42,16 +42,19 @@ class ModeSelectionScreen(Screen):
                 yield Button("Easy", id="easy")
                 yield Button("Hard", id="hard")
             with Center():
+                yield Checkbox("Infinite Undo", id="infinite-undo")
+            with Center():
                 yield Button("Show Leaderboard", id="leaderboard")
 
     @on(Button.Pressed)
     def button_pressed(self, event: Button.Pressed) -> None:
         from pasjans import Game
         pygame.mixer.stop()
+        infinite_undo: bool = self.screen.query_one("#infinite-undo", Checkbox).value
         match event.button.id:
             case "easy":
-                self.screen.app.push_screen(Game(True))
+                self.screen.app.push_screen(Game(True, infinite_undo))
             case "hard":
-                self.screen.app.push_screen(Game(False))
+                self.screen.app.push_screen(Game(False, infinite_undo))
             case "leaderboard":
                 self.screen.app.push_screen(Leaderboard())

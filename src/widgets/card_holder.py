@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from rich.panel import Panel
-from textual.css.query import DOMQuery
 from textual.widget import Widget
 
 from controllers.card_interact_controller import CardInteractController
