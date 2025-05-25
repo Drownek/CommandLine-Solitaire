@@ -31,12 +31,14 @@ class CardHolder(Widget):
         invisible: bool = False,
         pile: Pile | None = None,
         foundation_index: int | None = None,
+        card_interact_controller: CardInteractController = None,
     ):
         super().__init__()
         self.pile = pile
         self.foundation_index = foundation_index
         if invisible:
             self.add_class("invisible")
+        self._card_interact_controller = card_interact_controller or ServiceLocator.get(CardInteractController)
 
     def copy(self) -> CardHolder:
         return CardHolder(self.has_class("invisible"))
@@ -54,5 +56,4 @@ class CardHolder(Widget):
         )
 
     def on_click(self) -> None:
-        controller = ServiceLocator.get(CardInteractController)
-        controller.handle_card_holder_click(self)
+        self._card_interact_controller.handle_card_holder_click(self)

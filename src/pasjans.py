@@ -66,11 +66,12 @@ class Game(Screen):
     and determining the game's completion.
     """
 
-    def __init__(self, easy_mode: bool, infinite_undo: bool):
+    def __init__(self, easy_mode: bool, infinite_undo: bool, game_state_manager: GameStateManager = None):
         super().__init__()
         ServiceLocator.register(CardInteractController, CardInteractController(self.screen, easy_mode))
         self.easy_mode = easy_mode
         self.infinite_undo = infinite_undo
+        self._game_state_manager = game_state_manager or ServiceLocator.get(GameStateManager)
 
     BINDINGS = [
         Binding("n", "new_game", "New Game"),
@@ -88,8 +89,7 @@ class Game(Screen):
         Sound("sounds/shuffle.ogg").play()
 
     def action_undo(self) -> None:
-        game_state_manager = ServiceLocator.get(GameStateManager)
-        game_state_manager.undo_last_operation(self.screen)
+        self._game_state_manager.undo_last_operation(self.screen)
 
     def action_new_game(self) -> None:
         self.screen.app.pop_screen()

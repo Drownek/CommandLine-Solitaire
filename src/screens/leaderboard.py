@@ -16,12 +16,15 @@ class Leaderboard(Screen):
 
     BINDINGS = [Binding("n", "back", "Back")]
 
+    def __init__(self, database_manager: DatabaseManager = None):
+        super().__init__()
+        self._database_manager = database_manager or ServiceLocator.get(DatabaseManager)
+
     def compose(self) -> ComposeResult:
         table: DataTable = DataTable()
         keys = table.add_columns("Player Name", "Moves", "Time", "Date")
 
-        database_manager = ServiceLocator.get(DatabaseManager)
-        scores: list[tuple[str, int, int, str]] = database_manager.get_top_scores()
+        scores: list[tuple[str, int, int, str]] = self._database_manager.get_top_scores()
         for score in scores:
             player_name: str = score[0]
             moves: int = score[1]

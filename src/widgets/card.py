@@ -29,11 +29,19 @@ class Card(Widget):
 
     color = reactive("dim", recompose=True)
 
-    def __init__(self, suit: str, value: str, hidden: bool = False, **kwargs):
+    def __init__(
+        self,
+        suit: str,
+        value: str,
+        hidden: bool = False,
+        card_controller: CardInteractController = None,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self.suit = suit
         self.value = value
         self.hidden = hidden
+        self._card_controller = card_controller or ServiceLocator.get(CardInteractController)
 
     def __str__(self) -> str:
         return f"{self.suit}{self.value}"
@@ -73,8 +81,7 @@ class Card(Widget):
         )
 
     def on_click(self) -> None:
-        controller = ServiceLocator.get(CardInteractController)
-        controller.handle_card_click(self)
+        self._card_controller.handle_card_click(self)
 
     def hide(self) -> None:
         self.hidden = True

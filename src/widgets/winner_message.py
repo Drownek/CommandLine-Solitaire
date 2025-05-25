@@ -26,6 +26,10 @@ class WinnerMessage(Widget):
 
     moves = reactive(0, recompose=True)
 
+    def __init__(self, database_manager: DatabaseManager = None) -> None:
+        super().__init__()
+        self._database_manager = database_manager or ServiceLocator.get(DatabaseManager)
+
     def compose(self) -> ComposeResult:
         yield Static(
             f"🎉 W I N N E R ! 🎉\n\nYou solved pasjans in {self.moves} move{self._plural(self.moves)}.\n\n",
@@ -49,8 +53,7 @@ class WinnerMessage(Widget):
         time_display: TimeDisplay = self.screen.query_one(TimeDisplay)
         game_header: GameHeader = self.screen.query_one(GameHeader)
         moves = game_header.moves
-        database_manager = ServiceLocator.get(DatabaseManager)
-        database_manager.save_score(winner_name, moves, time_display.time)
+        self._database_manager.save_score(winner_name, moves, time_display.time)
         self.screen.app.push_screen(Leaderboard())
 
     @staticmethod
