@@ -3,6 +3,7 @@ from textual.binding import Binding
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer
 
+from controllers.service_locator import ServiceLocator
 from managers.database_manager import DatabaseManager
 from managers.game_state_manager import GameStateManager
 
@@ -16,16 +17,12 @@ class Leaderboard(Screen):
     
     BINDINGS = [Binding("n", "back", "Back")]
 
-    def __init__(self, database_manager: DatabaseManager, game_state_manager: GameStateManager):
-        super().__init__()
-        self.game_state_manager = game_state_manager
-        self.database_manager = database_manager
-
     def compose(self) -> ComposeResult:
         table: DataTable = DataTable()
         keys = table.add_columns("Player Name", "Moves", "Time", "Date")
 
-        scores: list[tuple[str, int, int, str]] = self.database_manager.get_top_scores()
+        database_manager = ServiceLocator.get(DatabaseManager)
+        scores: list[tuple[str, int, int, str]] = database_manager.get_top_scores()
         for score in scores:
             player_name: str = score[0]
             moves: int = score[1]
@@ -44,5 +41,5 @@ class Leaderboard(Screen):
 
     def action_back(self) -> None:
         from screens.mode_selection import ModeSelectionScreen
-        self.screen.app.push_screen(ModeSelectionScreen(self.database_manager, self.game_state_manager))
+        self.screen.app.push_screen(ModeSelectionScreen())
 

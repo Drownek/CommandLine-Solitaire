@@ -11,6 +11,7 @@ from textual.validation import Length
 from textual.widget import Widget
 from textual.widgets import Static, Input, Button
 
+from controllers.service_locator import ServiceLocator
 from managers.game_state_manager import GameStateManager
 from screens.leaderboard import Leaderboard
 from widgets.time_display import TimeDisplay
@@ -24,24 +25,14 @@ class WinnerMessage(Widget):
     This class is responsible for presenting the winning message, collecting the player's
     name, and saving the player's score to the database. It also handles playing the
     winning sound and interacting with the game state and database managers.
-
-    :ivar game_state_manager: Manages the current state of the game.
-    :ivar database_manager: Handles database operations, including saving scores.
-    :ivar moves: Tracks the number of moves taken to win, reactive attribute.
     """
 
     moves = reactive(0, recompose=True)
 
-    def __init__(self, database_manager: DatabaseManager, game_state_manager: GameStateManager):
-        super().__init__()
-        self.game_state_manager = game_state_manager
-        self.database_manager = database_manager
-
     def compose(self) -> ComposeResult:
         yield Static(f"🎉 W I N N E R ! 🎉\n\nYou solved pasjans in {self.moves} move{self._plural(self.moves)}.\n\n",
                      id="winner-text")
-        yield Input(placeholder="Player name", id="winner-name",
-                    validators=Length(4, 16))
+        yield Input(placeholder="Player name", id="winner-name", validators=Length(4, 16))
         with Center():
             yield Button("Save score", id="save-score")
 
@@ -57,8 +48,9 @@ class WinnerMessage(Widget):
         time_display: TimeDisplay = self.screen.query_one(TimeDisplay)
         game_header: GameHeader = self.screen.query_one(GameHeader)
         moves = game_header.moves
-        self.database_manager.save_score(winner_name, moves, time_display.time)
-        self.screen.app.push_screen(Leaderboard(self.database_manager, self.game_state_manager))
+        database_manager = ServiceLocator.get(DatabaseManager)
+        database_manager.save_score(winner_name, moves, time_display.time)
+        self.screen.app.push_screen(Leaderboard())
 
     @staticmethod
     def _plural(value: int) -> str:

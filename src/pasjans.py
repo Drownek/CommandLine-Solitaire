@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import pygame
 from pygame.mixer import Sound
 from textual.app import App, ComposeResult
@@ -12,6 +10,8 @@ from textual.screen import Screen
 from textual.widget import Widget
 from textual.widgets import Label, Footer
 
+from controllers.card_interact_controller import CardInteractController
+from controllers.service_locator import ServiceLocator
 from managers.database_manager import DatabaseManager
 from managers.game_state_manager import GameState, GameStateManager
 from managers.theme_manager import ThemeManager
@@ -60,9 +60,9 @@ class Game(Screen):
     and determining the game's completion.
     """
 
-    def __init__(self, easy_mode: bool, game_state_manager: GameStateManager):
+    def __init__(self, easy_mode: bool):
         super().__init__()
-        self.game_state_manager = game_state_manager
+        ServiceLocator.register(CardInteractController, CardInteractController(self.screen, easy_mode))
         self.easy_mode = easy_mode
 
     BINDINGS = [
@@ -77,16 +77,16 @@ class Game(Screen):
         yield GameHeader()
         yield GameLayout()
         yield Footer()
-        yield WinnerMessage(Pasjans.database_manager, self.game_state_manager)
+        yield WinnerMessage()
         Sound("sounds/shuffle.ogg").play()
 
     def action_undo(self) -> None:
-        self.game_state_manager.undo_last_operation(self.screen)
+        game_state_manager = ServiceLocator.get(GameStateManager)
+        game_state_manager.undo_last_operation(self.screen)
 
     def action_new_game(self) -> None:
         self.screen.app.pop_screen()
 
-    # noinspection PyMethodMayBeStatic
     def action_change_theme(self) -> None:
         ThemeManager.switch_theme(self.screen)
         self.notify(f"Changed theme to '{ThemeManager.current_theme}'")
@@ -142,7 +142,6 @@ class Pasjans(App[None]):
     :ivar SCREENS: A dictionary mapping screen identifiers to their
         corresponding screen classes.
     :ivar TITLE: Title of the application displayed in the UI.
-    :ivar database_manager: Used to store top scores to SQLite
     """
 
     ENABLE_COMMAND_PALETTE = False
@@ -150,9 +149,11 @@ class Pasjans(App[None]):
     SCREENS = {"help": Help}
     TITLE = "Pasjans Gigathon"
 
-    database_manager: DatabaseManager = DatabaseManager()
-    game_state_manager: GameStateManager = GameStateManager()
+    def __init__(self):
+        super().__init__()
+        ServiceLocator.register(DatabaseManager, DatabaseManager())
+        ServiceLocator.register(GameStateManager, GameStateManager())
 
     def on_mount(self) -> None:
         pygame.mixer.init()
-        self.push_screen(ModeSelectionScreen(self.database_manager, self.game_state_manager))
+        self.push_screen(ModeSelectionScreen())

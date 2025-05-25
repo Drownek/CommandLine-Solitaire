@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import pygame.mixer
 from pygame.mixer import Sound
 from textual import on
@@ -10,8 +8,6 @@ from textual.containers import Middle, Center
 from textual.screen import Screen
 from textual.widgets import Label, Button
 
-from managers.database_manager import DatabaseManager
-from managers.game_state_manager import GameStateManager
 from screens.leaderboard import Leaderboard
 
 
@@ -23,11 +19,8 @@ class ModeSelectionScreen(Screen):
     difficulty.
     """
 
-    def __init__(self, database_manager: DatabaseManager, game_state_manager: GameStateManager):
+    def __init__(self):
         super().__init__()
-        self.game_state_manager = game_state_manager
-        self.database_manager = database_manager
-        
         Sound("./sounds/lobby.mp3").play(-1)
 
     def compose(self) -> ComposeResult:
@@ -57,8 +50,8 @@ class ModeSelectionScreen(Screen):
         pygame.mixer.stop()
         match event.button.id:
             case "easy":
-                self.screen.app.push_screen(Game(True, self.game_state_manager))
+                self.screen.app.push_screen(Game(True))
             case "hard":
-                self.screen.app.push_screen(Game(False, self.game_state_manager))
+                self.screen.app.push_screen(Game(False))
             case "leaderboard":
-                self.screen.app.push_screen(Leaderboard(self.database_manager, self.game_state_manager))
+                self.screen.app.push_screen(Leaderboard())
