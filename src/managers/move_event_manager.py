@@ -2,7 +2,14 @@ from pygame.mixer import Sound
 from textual.screen import Screen
 
 from controllers.service_locator import ServiceLocator
+from managers.game_state_manager import GameState
 from managers.game_state_manager import GameStateManager
+from widgets.card import Card
+from widgets.foundation import Foundation
+from widgets.game_header import GameHeader
+from widgets.stash_waste import StashWaste
+from widgets.tableau import Tableau
+from widgets.winner_message import WinnerMessage
 
 
 class MoveEventManager:
@@ -12,10 +19,6 @@ class MoveEventManager:
 
     def on_post_move_event(self, screen: Screen) -> None:
         """Used for checking if game is won, and move count tracker"""
-        from widgets.game_header import GameHeader
-        from widgets.foundation import Foundation
-        from widgets.card import Card
-        from widgets.winner_message import WinnerMessage
 
         Sound("sounds/flip.ogg").play()
 
@@ -36,10 +39,6 @@ class MoveEventManager:
 
     def on_pre_move_event(self, screen: Screen) -> None:
         """Used for tracking moves for undo operation"""
-        from widgets.foundation import Foundation
-        from widgets.tableau import Tableau
-        from widgets.stash_waste import StashWaste
-        from managers.game_state_manager import GameState
 
         foundation: Foundation = screen.query_one(Foundation)
         tableau: Tableau = screen.query_one(Tableau)

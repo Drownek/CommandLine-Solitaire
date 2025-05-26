@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from random import shuffle
-from typing import cast, TYPE_CHECKING
+from typing import cast
 
 from textual.css.query import DOMQuery
 from textual.screen import Screen
@@ -9,14 +9,11 @@ from textual.screen import Screen
 import constants
 from controllers.service_locator import ServiceLocator
 from managers.move_event_manager import MoveEventManager
-
-if TYPE_CHECKING:
-    from screens.game import Game
-    from widgets.card import Card
-    from widgets.tableau import Pile
-    from widgets.foundation import Foundation
-    from widgets.stash_waste import StashWaste
-    from widgets.card_holder import CardHolder
+from widgets.card import Card
+from widgets.card_holder import CardHolder
+from widgets.foundation import Foundation
+from widgets.stash_waste import StashWaste
+from widgets.tableau import Pile
 
 
 class CardInteractController:
@@ -51,19 +48,12 @@ class CardInteractController:
             card: The card that was clicked
         """
 
-        from widgets.stash_waste import StashWaste
-        from widgets.tableau import Pile
-        from widgets.card import Card
-        from screens.game import Game
-        from widgets.foundation import Foundation
-
         stash_waste: StashWaste = self.screen.query_one(StashWaste)
         top_stash_card = stash_waste.get_top_stash_card()
-        game: Game = cast(Game, self.screen)
 
         # Discovering new card from stash
         if top_stash_card == card:
-            self._handle_stash_card_draw(stash_waste, game)
+            self._handle_stash_card_draw(stash_waste)
             return
 
         # Rerolling cards if reached end of stash
@@ -96,9 +86,9 @@ class CardInteractController:
 
         # Allow selecting cards in waste
         if card in stash_waste.waste:
-            self._handle_waste_card_click(stash_waste, game, card)
+            self._handle_waste_card_click(stash_waste, card)
 
-    def _handle_stash_card_draw(self, stash_waste: StashWaste, game: Game) -> None:
+    def _handle_stash_card_draw(self, stash_waste: StashWaste) -> None:
         """Handle drawing a card from the stash."""
 
         self._move_event_manager.on_pre_move_event(self.screen)
@@ -109,7 +99,7 @@ class CardInteractController:
         waste = stash_waste.waste.copy()
         stash = stash_waste.stash.copy()
 
-        if not game.easy_mode:
+        if not self.easy_mode:
             cards_to_pop = min(3, len(stash))
             for _ in range(cards_to_pop):
                 if stash:
@@ -149,7 +139,6 @@ class CardInteractController:
         card: Card,
     ) -> None:
         """Handle clicking on a card in a pile."""
-        from widgets.card import Card
 
         if card.is_selected():
             pile.unselect_cards()
@@ -167,8 +156,6 @@ class CardInteractController:
         self, pile: Pile, selected_cards: DOMQuery[Card], stash_waste: StashWaste
     ) -> None:
         """Handle moving cards to a pile."""
-        from widgets.card import Card
-
         top_card: Card = pile.cards[-1]
         bottom_card: Card = selected_cards[0]
 
@@ -238,7 +225,6 @@ class CardInteractController:
         self, pile: Pile, stash_waste: StashWaste, clicked_card: Card
     ) -> None:
         """Handle selecting cards in a pile."""
-        from widgets.tableau import Pile
 
         # Unselect all cards
         for current_pile in self.screen.query(Pile):
@@ -346,17 +332,16 @@ class CardInteractController:
         self._move_event_manager.on_post_move_event(self.screen)
 
     def _handle_waste_card_click(
-        self, stash_waste: StashWaste, game: Game, card: Card
+        self, stash_waste: StashWaste, card: Card
     ) -> None:
         """Handle clicking on a card in the waste."""
-        from widgets.tableau import Pile
 
         if card.is_selected():
             card.make_unselected()
         else:
             # Check if card is top one from waste if on hard mode
             top_waste_card = stash_waste.get_top_waste_card()
-            if game.easy_mode or top_waste_card == card:
+            if self.easy_mode or top_waste_card == card:
                 # Unselect all pile cards
                 for pile in self.screen.query(Pile):
                     pile.unselect_cards()
@@ -372,11 +357,6 @@ class CardInteractController:
         moving cards such as placing only a king on an empty pile or only an ace on an
         empty foundation.
         """
-
-        from widgets.tableau import Pile
-        from widgets.stash_waste import StashWaste
-        from widgets.foundation import Foundation
-        from widgets.card import Card
 
         selected_cards = cast(DOMQuery[Card], self.screen.query("Card.selected"))
 

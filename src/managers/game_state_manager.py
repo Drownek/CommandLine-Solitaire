@@ -6,6 +6,7 @@ from widgets.card import Card
 from widgets.foundation import Foundation
 from widgets.stash_waste import StashWaste
 from widgets.tableau import Pile, Tableau
+from widgets.game_header import GameHeader
 
 
 class GameStateManager:
@@ -30,7 +31,6 @@ class GameStateManager:
         and checks for undo limits. The affected components include the foundation,
         tableau, stash, and waste piles.
         """
-        from widgets.game_header import GameHeader
 
         foundation: Foundation = screen.query_one(Foundation)
         tableau: Tableau = screen.query_one(Tableau)
