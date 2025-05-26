@@ -4,3 +4,4 @@ RED_SUITS = ["♥", "♦"]
 BLACK_SUITS = ["♠", "♣"]
 THEMES = ["default", "ascii"]
 MAX_UNDO = 3
+WASTE_CARD_HORIZONTAL_OFFSET = -4

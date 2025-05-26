@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from rich.box import Box
 from rich.panel import Panel
 from textual.reactive import reactive
 from textual.widget import Widget
 
+from constants import RED_SUITS
 from controllers.service_locator import ServiceLocator
 from managers.theme_manager import ThemeManager
 
@@ -57,26 +59,10 @@ class Card(Widget):
         return Card(self.suit, self.value, self.hidden)
 
     def render(self) -> Panel:
-        red = self.suit in ("♥", "♦")
-        if self.hidden:
-            self.color = "dim"
-        elif self._theme_manager.current_theme != "rainbow":
-            self.color = "red" if red else "white"
-
-        value: str = self.value if not self.hidden else "?"
-        symbol_display = self.suit if not self.hidden else "?"
-
-        spaces = "   " if len(value) == 2 else "    "
-        content = (
-            f"[{self.color}]{symbol_display}{value}[/][{self.color}][/]{spaces}\n\n\n"
-        )
-
-        if self.is_selected():
-            border_box = self._theme_manager.get_selected_box()
-        else:
-            border_box = self._theme_manager.get_box()
-
-        assert border_box is not None
+        """Render the card as a Panel with appropriate styling based on card state."""
+        self._set_card_color()
+        content = self._generate_card_content()
+        border_box = self._get_border_box()
 
         return Panel.fit(
             content,
@@ -85,6 +71,34 @@ class Card(Widget):
             padding=(0, 0),
             title_align="left",
         )
+
+    def _set_card_color(self) -> None:
+        """Determine and set the appropriate color for the card based on suit and state."""
+        is_red_suit = self.suit in RED_SUITS
+
+        if self.hidden:
+            self.color = "dim"
+        elif self._theme_manager.current_theme != "rainbow":
+            self.color = "red" if is_red_suit else "white"
+
+    def _generate_card_content(self) -> str:
+        """Generate the visible content for the card based on its state."""
+        display_value = "?" if self.hidden else self.value
+        display_symbol = "?" if self.hidden else self.suit
+        # More space needed for single-digit cards to align properly
+        spacing = "   " if len(display_value) == 2 else "    "
+
+        return f"[{self.color}]{display_symbol}{display_value}[/][{self.color}][/]{spacing}\n\n\n"
+
+    def _get_border_box(self) -> Box:
+        """Get the appropriate border box based on the card's selection state."""
+        border_box = (
+            self._theme_manager.get_selected_box()
+            if self.is_selected()
+            else self._theme_manager.get_box()
+        )
+        assert border_box is not None
+        return border_box
 
     def on_click(self) -> None:
         self._card_controller.handle_card_click(self)

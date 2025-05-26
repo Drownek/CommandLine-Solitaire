@@ -37,11 +37,22 @@ class Pasjans(App[None]):
 
     def __init__(self) -> None:
         super().__init__()
+        self._initialize_services()
+
+    def _initialize_services(self) -> None:
+        """
+        Initialize and register all required services with the ServiceLocator.
+        This includes database, game state, move events, and theme management.
+        """
         ServiceLocator.register(DatabaseManager, DatabaseManager())
         ServiceLocator.register(GameStateManager, GameStateManager())
         ServiceLocator.register(MoveEventManager, MoveEventManager())
         ServiceLocator.register(ThemeManager, ThemeManager())
 
     def on_mount(self) -> None:
+        """
+        Initialize audio and display the mode selection screen.
+        Called when the application is mounted.
+        """
         pygame.mixer.init()
         self.push_screen(ModeSelectionScreen())

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import cast, TYPE_CHECKING
+from typing import cast, TYPE_CHECKING, Iterator
 
 from textual.app import ComposeResult
 from textual.containers import HorizontalGroup
@@ -37,37 +37,55 @@ class StashWaste(HorizontalGroup):
     def compose(self) -> ComposeResult:
         """
         Compose cards for display, including cards from the stash, waste, and appropriate placeholders.
-
         This function is responsible for yielding a sequence of cards or placeholders to be displayed,
-        depending on the current state of the game. If a card exists at the top of the stash, or if the
-        game is in easy mode, it handles the respective card offset adjustments and yields the resulting
-        cards or placeholders. For non-easy mode, it processes the last three cards in the waste pile
-        (scaled down if fewer cards are present) and adjusts their offsets according to their position.
+        depending on the current state of the game.
         """
         from screens.game import Game
+
+        # Handle stash card display
+        yield self._prepare_stash_card_for_display()
+
+        # Handle waste cards display based on game mode
+        game: Game = cast(Game, self.screen)
+
+        if game.easy_mode:
+            yield self._prepare_easy_mode_waste_display()
+        else:
+            yield from self._prepare_standard_waste_display()
+
+    def _prepare_stash_card_for_display(self) -> Card:
+        """Prepare and position the stash card for display."""
         from widgets.card import Card
 
-        top_stash_card: Card | None = self.get_top_stash_card()
+        top_stash_card = self.get_top_stash_card()
+
         if top_stash_card:
             top_stash_card.offset = (0, 0)  # type: ignore
+            return top_stash_card
 
-        yield top_stash_card or Card(" ", "⟳")
-        game: Game = cast(Game, self.screen)
-        if game.easy_mode:
-            top_waste_card = self.get_top_waste_card()
-            if top_waste_card:
-                top_waste_card.offset = (0, 0)  # type: ignore
-            yield top_waste_card or CardHolder()
-        else:
-            if not self.waste:
-                yield CardHolder()
-                return
+        return Card(" ", "⟳")  # Return refresh symbol when stash is empty
 
-            last_cards = self.waste[-3:]
+    def _prepare_easy_mode_waste_display(self) -> Card | CardHolder:
+        """Prepare waste display for easy mode (only top card)."""
+        top_waste_card = self.get_top_waste_card()
 
-            for i, card in enumerate(last_cards):
-                card.offset = (i * -4, 0)  # type: ignore
-                yield card
+        if top_waste_card:
+            top_waste_card.offset = (0, 0)  # type: ignore
+            return top_waste_card
+
+        return CardHolder()  # Empty placeholder when no waste card is available
+
+    def _prepare_standard_waste_display(self) -> Iterator[Card | CardHolder]:
+        """Prepare waste display for standard mode (showing up to three cards)."""
+        if not self.waste:
+            yield CardHolder()
+            return
+
+        # Display the last three cards with offset positioning
+        visible_waste_cards = self.waste[-3:]
+        for index, card in enumerate(visible_waste_cards):
+            card.offset = (index * WASTE_CARD_HORIZONTAL_OFFSET, 0)  # type: ignore
+            yield card
 
     def get_top_stash_card(self) -> Card | None:
         return self.stash[-1] if self.stash else None
