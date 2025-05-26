@@ -30,7 +30,7 @@ class GameStateManager:
         and checks for undo limits. The affected components include the foundation,
         tableau, stash, and waste piles.
         """
-        from pasjans import GameHeader
+        from widgets.game_header import GameHeader
 
         foundation: Foundation = screen.query_one(Foundation)
         tableau: Tableau = screen.query_one(Tableau)

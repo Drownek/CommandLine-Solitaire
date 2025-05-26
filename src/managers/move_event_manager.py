@@ -12,7 +12,7 @@ class MoveEventManager:
 
     def on_post_move_event(self, screen: Screen) -> None:
         """Used for checking if game is won, and move count tracker"""
-        from pasjans import GameHeader
+        from widgets.game_header import GameHeader
         from widgets.foundation import Foundation
         from widgets.card import Card
         from widgets.winner_message import WinnerMessage

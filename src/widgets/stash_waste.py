@@ -44,7 +44,7 @@ class StashWaste(HorizontalGroup):
         cards or placeholders. For non-easy mode, it processes the last three cards in the waste pile
         (scaled down if fewer cards are present) and adjusts their offsets according to their position.
         """
-        from pasjans import Game
+        from screens.game import Game
         from widgets.card import Card
 
         top_stash_card: Card | None = self.get_top_stash_card()

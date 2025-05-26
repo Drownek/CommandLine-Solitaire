@@ -43,7 +43,7 @@ class WinnerMessage(Widget):
 
     @on(Button.Pressed)
     def save_score(self) -> None:
-        from pasjans import GameHeader
+        from widgets.game_header import GameHeader
 
         winner_name_input = self.screen.query_one("#winner-name", Input)
         if not winner_name_input.is_valid:

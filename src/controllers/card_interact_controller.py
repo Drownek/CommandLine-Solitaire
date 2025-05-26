@@ -11,7 +11,7 @@ from controllers.service_locator import ServiceLocator
 from managers.move_event_manager import MoveEventManager
 
 if TYPE_CHECKING:
-    from pasjans import Game
+    from screens.game import Game
     from widgets.card import Card
     from widgets.tableau import Pile
     from widgets.foundation import Foundation
@@ -54,7 +54,7 @@ class CardInteractController:
         from widgets.stash_waste import StashWaste
         from widgets.tableau import Pile
         from widgets.card import Card
-        from pasjans import Game
+        from screens.game import Game
         from widgets.foundation import Foundation
 
         stash_waste: StashWaste = self.screen.query_one(StashWaste)

@@ -48,7 +48,7 @@ class ModeSelectionScreen(Screen):
 
     @on(Button.Pressed)
     def button_pressed(self, event: Button.Pressed) -> None:
-        from pasjans import Game
+        from screens.game import Game
 
         pygame.mixer.stop()
         infinite_undo: bool = self.screen.query_one("#infinite-undo", Checkbox).value
