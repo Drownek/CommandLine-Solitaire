@@ -16,22 +16,22 @@ class ThemeManager:
     update UI layouts accordingly.
     """
 
-    current_theme = "default"
-    rainbow_timer: Timer | None = None
+    def __init__(self) -> None:
+        self.current_theme = "default"
+        self.rainbow_timer: Timer | None = None
 
-    @staticmethod
-    def switch_theme(screen: Screen):
+    def switch_theme(self, screen: Screen):
         from widgets.card import Card
 
-        match ThemeManager.current_theme:
+        match self.current_theme:
             case "default":
-                ThemeManager.current_theme = "ascii"
+                self.current_theme = "ascii"
             case "ascii":
-                ThemeManager.current_theme = "rainbow"
-                ThemeManager.start_rainbow_animation(screen)
+                self.current_theme = "rainbow"
+                self.start_rainbow_animation(screen)
             case "rainbow":
-                ThemeManager.current_theme = "default"
-                ThemeManager.stop_rainbow_animation()
+                self.current_theme = "default"
+                self.stop_rainbow_animation()
 
         for card in screen.query(Card):
             card.refresh()
@@ -39,8 +39,7 @@ class ThemeManager:
         for holder in screen.query(CardHolder):
             holder.refresh()
 
-    @staticmethod
-    def start_rainbow_animation(screen: Screen):
+    def start_rainbow_animation(self, screen: Screen):
         """
         Starts the rainbow animation for the cards.
 
@@ -48,12 +47,12 @@ class ThemeManager:
         """
         from widgets.card import Card
 
-        ThemeManager.stop_rainbow_animation()
+        self.stop_rainbow_animation()
 
         start_time = time.time()
 
         def update_rainbow_colors() -> None:
-            if ThemeManager.current_theme == "rainbow":
+            if self.current_theme == "rainbow":
                 cards = list(screen.query(Card))
                 total_cards = len(cards)
 
@@ -71,13 +70,12 @@ class ThemeManager:
                             elapsed_time * wave_speed + card_position * wave_length
                         ) % 1.0
 
-                        card.color = ThemeManager.get_rainbow_color_with_phase(phase)
+                        card.color = self.get_rainbow_color_with_phase(phase)
                         card.refresh()
 
-        ThemeManager.rainbow_timer = screen.set_interval(1 / 120, update_rainbow_colors)
+        self.rainbow_timer = screen.set_interval(1 / 120, update_rainbow_colors)
 
-    @staticmethod
-    def get_rainbow_color_with_phase(phase: float) -> str:
+    def get_rainbow_color_with_phase(self, phase: float) -> str:
         """
         Calculates a rainbow color based on the provided phase.
 
@@ -111,24 +109,21 @@ class ThemeManager:
 
         return f"#{r:02x}{g:02x}{b:02x}"
 
-    @staticmethod
-    def stop_rainbow_animation() -> None:
-        if ThemeManager.rainbow_timer:
-            ThemeManager.rainbow_timer.stop()
-            ThemeManager.rainbow_timer = None
+    def stop_rainbow_animation(self) -> None:
+        if self.rainbow_timer:
+            self.rainbow_timer.stop()
+            self.rainbow_timer = None
 
-    @staticmethod
-    def get_box() -> Box | None:
-        match ThemeManager.current_theme:
+    def get_box(self) -> Box | None:
+        match self.current_theme:
             case "default" | "rainbow":
                 return box.ROUNDED
             case "ascii":
                 return box.ASCII
         return None
 
-    @staticmethod
-    def get_selected_box() -> Box | None:
-        match ThemeManager.current_theme:
+    def get_selected_box(self) -> Box | None:
+        match self.current_theme:
             case "default" | "rainbow":
                 return box.HEAVY
             case "ascii":

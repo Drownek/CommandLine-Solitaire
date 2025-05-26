@@ -6,12 +6,12 @@ from rich.panel import Panel
 from textual.reactive import reactive
 from textual.widget import Widget
 
-from controllers.card_interact_controller import CardInteractController
 from controllers.service_locator import ServiceLocator
 from managers.theme_manager import ThemeManager
 
 if TYPE_CHECKING:
     from widgets.tableau import Pile
+    from controllers.card_interact_controller import CardInteractController
 
 
 class Card(Widget):
@@ -35,13 +35,17 @@ class Card(Widget):
         value: str,
         hidden: bool = False,
         card_controller: CardInteractController = None,
+        theme_manager: ThemeManager = None,
         **kwargs,
     ):
+        from controllers.card_interact_controller import CardInteractController
+
         super().__init__(**kwargs)
         self.suit = suit
         self.value = value
         self.hidden = hidden
         self._card_controller = card_controller or ServiceLocator.get(CardInteractController)
+        self._theme_manager = theme_manager or ServiceLocator.get(ThemeManager)
 
     def __str__(self) -> str:
         return f"{self.suit}{self.value}"
@@ -53,22 +57,24 @@ class Card(Widget):
         return Card(self.suit, self.value, self.hidden)
 
     def render(self) -> Panel:
-        red = self.suit in ('♥', '♦')
+        red = self.suit in ("♥", "♦")
         if self.hidden:
             self.color = "dim"
-        elif ThemeManager.current_theme != "rainbow":
+        elif self._theme_manager.current_theme != "rainbow":
             self.color = "red" if red else "white"
 
-        value: str = self.value if not self.hidden else '?'
-        symbol_display = self.suit if not self.hidden else '?'
+        value: str = self.value if not self.hidden else "?"
+        symbol_display = self.suit if not self.hidden else "?"
 
         spaces = "   " if len(value) == 2 else "    "
-        content = f"[{self.color}]{symbol_display}{value}[/][{self.color}][/]{spaces}\n\n\n"
+        content = (
+            f"[{self.color}]{symbol_display}{value}[/][{self.color}][/]{spaces}\n\n\n"
+        )
 
         if self.is_selected():
-            border_box = ThemeManager.get_selected_box()
+            border_box = self._theme_manager.get_selected_box()
         else:
-            border_box = ThemeManager.get_box()
+            border_box = self._theme_manager.get_box()
 
         assert border_box is not None
 
@@ -77,7 +83,7 @@ class Card(Widget):
             border_style=self.color,
             box=border_box,
             padding=(0, 0),
-            title_align="left"
+            title_align="left",
         )
 
     def on_click(self) -> None:
@@ -93,6 +99,7 @@ class Card(Widget):
 
     def get_pile(self) -> Pile | None:
         from widgets.tableau import Pile
+
         for pile in self.screen.query(Pile):
             if self in pile.cards:
                 return pile

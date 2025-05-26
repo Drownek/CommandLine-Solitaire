@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from rich.console import ConsoleRenderable, RichCast, RenderableType
+from rich.console import RenderableType
 from rich.panel import Panel
-from textual.visual import Visual, SupportsVisual
 from textual.widget import Widget
 
-from controllers.card_interact_controller import CardInteractController
 from controllers.service_locator import ServiceLocator
 
 if TYPE_CHECKING:
     from widgets.tableau import Pile
+    from controllers.card_interact_controller import CardInteractController
+    from managers.theme_manager import ThemeManager
 
 
 class CardHolder(Widget):
@@ -32,21 +32,24 @@ class CardHolder(Widget):
         pile: Pile | None = None,
         foundation_index: int | None = None,
         card_interact_controller: CardInteractController = None,
+        theme_manager: ThemeManager = None,
     ):
+        from controllers.card_interact_controller import CardInteractController
+        from managers.theme_manager import ThemeManager
+
         super().__init__()
         self.pile = pile
         self.foundation_index = foundation_index
         if invisible:
             self.add_class("invisible")
         self._card_interact_controller = card_interact_controller or ServiceLocator.get(CardInteractController)
+        self._theme_manager = theme_manager or ServiceLocator.get(ThemeManager)
 
     def copy(self) -> CardHolder:
         return CardHolder(self.has_class("invisible"))
 
     def render(self) -> RenderableType:
-        from managers.theme_manager import ThemeManager
-
-        box = ThemeManager.get_box()
+        box = self._theme_manager.get_box()
         assert box is not None
         return Panel.fit(
             "    ",

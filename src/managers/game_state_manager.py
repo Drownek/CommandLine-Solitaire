@@ -18,10 +18,10 @@ class GameStateManager:
     made during gameplay.
     """
 
-    previous_states: list[GameState] = []
+    def __init__(self) -> None:
+        self.previous_states: list[GameState] = []
 
-    @staticmethod
-    def undo_last_operation(screen: Screen) -> None:
+    def undo_last_operation(self, screen: Screen) -> None:
         """
         Undo the last operation performed during the game.
 
@@ -37,7 +37,7 @@ class GameStateManager:
         stash_waste: StashWaste = screen.query_one(StashWaste)
         game_header = screen.query_one(GameHeader)
 
-        if not GameStateManager.previous_states:
+        if not self.previous_states:
             screen.notify("No more actions to undo.")
             return
 
@@ -47,7 +47,7 @@ class GameStateManager:
 
         game_header.moves -= 1
         game_header.remaining_undo -= 1
-        previous_game_state: GameState = GameStateManager.previous_states.pop()
+        previous_game_state: GameState = self.previous_states.pop()
 
         foundation.cards = previous_game_state.foundation.copy()
         tableau.piles = previous_game_state.piles.copy()
@@ -79,9 +79,8 @@ class GameState:
 
     This class provides a snapshot of the current game by storing references to
     the screen, piles in the tableau, the stash, waste piles, and the foundation.
-    It enables restoring the game state during an undo operation or similar functionality.
+    It enables restoring the game state during an undo operation.
 
-    :ivar screen: The screen instance used to render the game's UI elements.
     :ivar piles: A list of `Pile` objects representing tableau cards in the game.
     :ivar stash: A list of `Card` objects representing the current stash in the game.
     :ivar waste: A list of `Card` objects representing the waste pile in the game.
@@ -91,13 +90,11 @@ class GameState:
 
     def __init__(
         self,
-        screen: Screen,
         piles: list[Pile],
         stash: list[Card],
         waste: list[Card],
         foundation: list[Card | None],
     ):
-        self.screen = screen
         self.piles = piles
         self.stash = stash
         self.waste = waste

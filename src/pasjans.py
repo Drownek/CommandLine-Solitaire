@@ -14,15 +14,12 @@ from constants import MAX_UNDO
 from controllers.card_interact_controller import CardInteractController
 from controllers.service_locator import ServiceLocator
 from managers.database_manager import DatabaseManager
-from managers.game_state_manager import GameState, GameStateManager
+from managers.game_state_manager import GameStateManager
+from managers.move_event_manager import MoveEventManager
 from managers.theme_manager import ThemeManager
 from screens.help import Help
 from screens.mode_selection import ModeSelectionScreen
-from widgets.card import Card
-from widgets.foundation import Foundation
 from widgets.game_layout import GameLayout
-from widgets.stash_waste import StashWaste
-from widgets.tableau import Tableau
 from widgets.time_display import TimeDisplay
 from widgets.winner_message import WinnerMessage
 
@@ -66,12 +63,13 @@ class Game(Screen):
     and determining the game's completion.
     """
 
-    def __init__(self, easy_mode: bool, infinite_undo: bool, game_state_manager: GameStateManager = None):
+    def __init__(self, easy_mode: bool, infinite_undo: bool, game_state_manager: GameStateManager = None, theme_manager: ThemeManager = None):
         super().__init__()
         ServiceLocator.register(CardInteractController, CardInteractController(self.screen, easy_mode))
         self.easy_mode = easy_mode
         self.infinite_undo = infinite_undo
         self._game_state_manager = game_state_manager or ServiceLocator.get(GameStateManager)
+        self._theme_manager = theme_manager or ServiceLocator.get(ThemeManager)
 
     BINDINGS = [
         Binding("n", "new_game", "New Game"),
@@ -95,42 +93,8 @@ class Game(Screen):
         self.screen.app.pop_screen()
 
     def action_change_theme(self) -> None:
-        ThemeManager.switch_theme(self.screen)
-        self.notify(f"Changed theme to '{ThemeManager.current_theme}'")
-
-    @staticmethod
-    def on_post_move_event(screen: Screen) -> None:
-        """Used for checking if game is won, and move count tracker"""
-        Sound("sounds/flip.ogg").play()
-        game_header: GameHeader = screen.query_one(GameHeader)
-        game_header.moves += 1
-
-        king_card_in_foundation_count = 0
-        foundation: Foundation = screen.query_one(Foundation)
-
-        card: Card | None
-        for card in foundation.cards:
-            if card is not None and card.value == "K":
-                king_card_in_foundation_count += 1
-
-        if king_card_in_foundation_count == 4:
-            winner_message: WinnerMessage = screen.query_one(WinnerMessage)
-            winner_message.show(game_header.moves)
-
-    @staticmethod
-    def on_pre_move_event(screen: Screen) -> None:
-        """Used for tracking moves for undo operation"""
-        foundation: Foundation = screen.query_one(Foundation)
-        tableau: Tableau = screen.query_one(Tableau)
-        stash_waste: StashWaste = screen.query_one(StashWaste)
-        state = GameState(
-            screen,
-            [pile.deep_copy() for pile in tableau.piles],
-            stash_waste.deep_copy_stash(),
-            stash_waste.deep_copy_waste(),
-            foundation.copy_cards()
-        )
-        GameStateManager.previous_states.append(state)
+        self._theme_manager.switch_theme(self.screen)
+        self.notify(f"Changed theme to '{self._theme_manager.current_theme}'")
 
 
 class Pasjans(App[None]):
@@ -160,6 +124,8 @@ class Pasjans(App[None]):
         super().__init__()
         ServiceLocator.register(DatabaseManager, DatabaseManager())
         ServiceLocator.register(GameStateManager, GameStateManager())
+        ServiceLocator.register(MoveEventManager, MoveEventManager())
+        ServiceLocator.register(ThemeManager, ThemeManager())
 
     def on_mount(self) -> None:
         pygame.mixer.init()

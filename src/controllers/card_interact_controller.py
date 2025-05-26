@@ -7,6 +7,8 @@ from textual.css.query import DOMQuery
 from textual.screen import Screen
 
 import constants
+from controllers.service_locator import ServiceLocator
+from managers.move_event_manager import MoveEventManager
 
 if TYPE_CHECKING:
     from pasjans import Game
@@ -26,7 +28,7 @@ class CardInteractController:
     from the UI components.
     """
 
-    def __init__(self, screen: Screen, easy_mode: bool):
+    def __init__(self, screen: Screen, easy_mode: bool, move_event_manager: MoveEventManager = None):
         """
         Initialize the card interaction controller.
 
@@ -36,6 +38,7 @@ class CardInteractController:
         """
         self.screen = screen
         self.easy_mode = easy_mode
+        self._move_event_manager = move_event_manager or ServiceLocator.get(MoveEventManager)
 
     def handle_card_click(self, card: Card) -> None:
         """
@@ -97,9 +100,8 @@ class CardInteractController:
 
     def _handle_stash_card_draw(self, stash_waste: StashWaste, game: Game) -> None:
         """Handle drawing a card from the stash."""
-        from pasjans import Game
 
-        Game.on_pre_move_event(self.screen)
+        self._move_event_manager.on_pre_move_event(self.screen)
 
         for card in stash_waste.waste:
             card.make_unselected()
@@ -123,13 +125,12 @@ class CardInteractController:
         stash_waste.waste = waste
         stash_waste.stash = stash
 
-        Game.on_post_move_event(self.screen)
+        self._move_event_manager.on_post_move_event(self.screen)
 
     def _handle_stash_reroll(self, stash_waste: StashWaste) -> None:
         """Handle rerolling the stash when it's empty."""
-        from pasjans import Game
 
-        Game.on_pre_move_event(self.screen)
+        self._move_event_manager.on_pre_move_event(self.screen)
 
         waste = stash_waste.waste.copy()
         shuffle(waste)
@@ -138,7 +139,7 @@ class CardInteractController:
         stash_waste.waste = []
         stash_waste.stash = waste
 
-        Game.on_post_move_event(self.screen)
+        self._move_event_manager.on_post_move_event(self.screen)
 
     def _handle_pile_card_click(
         self,
@@ -166,7 +167,6 @@ class CardInteractController:
         self, pile: Pile, selected_cards: DOMQuery[Card], stash_waste: StashWaste
     ) -> None:
         """Handle moving cards to a pile."""
-        from pasjans import Game
         from widgets.card import Card
 
         top_card: Card = pile.cards[-1]
@@ -175,7 +175,7 @@ class CardInteractController:
         if not self._is_valid_pile_move(top_card, bottom_card):
             return
 
-        Game.on_pre_move_event(self.screen)
+        self._move_event_manager.on_pre_move_event(self.screen)
 
         pile_cards = pile.cards.copy()
         for card in selected_cards:
@@ -191,7 +191,7 @@ class CardInteractController:
         elif bottom_card in stash_waste.waste:
             self._move_from_waste_to_pile(stash_waste, bottom_card)
 
-        Game.on_post_move_event(self.screen)
+        self._move_event_manager.on_post_move_event(self.screen)
 
     def _is_valid_pile_move(self, top_card: Card, bottom_card: Card) -> bool:
         """Check if moving a card to a pile is valid."""
@@ -301,9 +301,8 @@ class CardInteractController:
         self, pile: Pile, foundation: Foundation, card: Card, foundation_card: Card
     ) -> None:
         """Handle moving a card from a pile to the foundation."""
-        from pasjans import Game
 
-        Game.on_pre_move_event(self.screen)
+        self._move_event_manager.on_pre_move_event(self.screen)
 
         pile_cards = pile.cards.copy()
         pile_cards.remove(card)
@@ -319,7 +318,7 @@ class CardInteractController:
 
         pile.cards = pile_cards
 
-        Game.on_post_move_event(self.screen)
+        self._move_event_manager.on_post_move_event(self.screen)
 
     def _move_from_waste_to_foundation(
         self,
@@ -329,9 +328,8 @@ class CardInteractController:
         foundation_card: Card,
     ) -> None:
         """Handle moving a card from waste to the foundation."""
-        from pasjans import Game
 
-        Game.on_pre_move_event(self.screen)
+        self._move_event_manager.on_pre_move_event(self.screen)
 
         waste_cards = stash_waste.waste.copy()
         waste_cards.remove(card)
@@ -345,7 +343,7 @@ class CardInteractController:
 
         card.make_unselected()
 
-        Game.on_post_move_event(self.screen)
+        self._move_event_manager.on_post_move_event(self.screen)
 
     def _handle_waste_card_click(
         self, stash_waste: StashWaste, game: Game, card: Card
@@ -377,7 +375,6 @@ class CardInteractController:
 
         from widgets.tableau import Pile
         from widgets.stash_waste import StashWaste
-        from pasjans import Game
         from widgets.foundation import Foundation
         from widgets.card import Card
 
@@ -396,7 +393,7 @@ class CardInteractController:
             if selected_card.value == "K":
                 # Moving card from tableau
                 if selected_card_pile:
-                    Game.on_pre_move_event(self.screen)
+                    self._move_event_manager.on_pre_move_event(self.screen)
 
                     selected_pile_cards: list[Card] = selected_card_pile.cards.copy()
                     card: Card
@@ -415,10 +412,10 @@ class CardInteractController:
 
                     holder_pile.cards = holder_pile_cards
 
-                    Game.on_post_move_event(self.screen)
+                    self._move_event_manager.on_post_move_event(self.screen)
                 # Moving card from waste
                 elif selected_card in stash_waste.waste:
-                    Game.on_pre_move_event(self.screen)
+                    self._move_event_manager.on_pre_move_event(self.screen)
 
                     waste_cards: list[Card] = stash_waste.waste.copy()
                     waste_cards.remove(selected_card)
@@ -431,7 +428,7 @@ class CardInteractController:
                     selected_card.make_unselected()
                     holder_pile.cards = holder_pile_cards
 
-                    Game.on_post_move_event(self.screen)
+                    self._move_event_manager.on_post_move_event(self.screen)
             return
 
         # Card holders are only at foundation, waste, so dont allow more than 1 card to move
@@ -445,7 +442,7 @@ class CardInteractController:
             if selected_card.value == "A":
                 # From pile to foundation
                 if selected_card_pile:
-                    Game.on_pre_move_event(self.screen)
+                    self._move_event_manager.on_pre_move_event(self.screen)
 
                     selected_pile_cards = selected_card_pile.cards.copy()
                     selected_pile_cards.remove(selected_card)
@@ -460,10 +457,10 @@ class CardInteractController:
 
                     selected_card_pile.cards = selected_pile_cards
 
-                    Game.on_post_move_event(self.screen)
+                    self._move_event_manager.on_post_move_event(self.screen)
                 # From waste to foundation
                 elif selected_card in stash_waste.waste:
-                    Game.on_pre_move_event(self.screen)
+                    self._move_event_manager.on_pre_move_event(self.screen)
 
                     waste_cards = stash_waste.waste.copy()
                     waste_cards.remove(selected_card)
@@ -477,4 +474,4 @@ class CardInteractController:
                     foundation_cards[card_holder.foundation_index] = selected_card
                     foundation.cards = foundation_cards
 
-                    Game.on_post_move_event(self.screen)
+                    self._move_event_manager.on_post_move_event(self.screen)
