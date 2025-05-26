@@ -84,7 +84,7 @@ class StashWaste(HorizontalGroup):
         # Display the last three cards with offset positioning
         visible_waste_cards = self.waste[-3:]
         for index, card in enumerate(visible_waste_cards):
-            card.offset = (index * WASTE_CARD_HORIZONTAL_OFFSET, 0)  # type: ignore
+            card.offset = (index * -4, 0)  # type: ignore
             yield card
 
     def get_top_stash_card(self) -> Card | None:
