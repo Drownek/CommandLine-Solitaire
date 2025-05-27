@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from time import monotonic
+
 from pygame.mixer import Sound
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -33,6 +35,8 @@ class Game(Screen):
         self.infinite_undo = infinite_undo
         self._game_state_manager = game_state_manager or ServiceLocator.get(GameStateManager)
         self._theme_manager = theme_manager or ServiceLocator.get(ThemeManager)
+
+    start_time: float = monotonic()
 
     BINDINGS = [
         Binding("n", "new_game", "New Game"),

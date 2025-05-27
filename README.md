@@ -11,7 +11,7 @@ Aby uruchomić grę, wykonaj następujące kroki:
     pip install -r .\requirements.txt
 ```
 
-1. Uruchom grę za pomocą komendy (testowane w Windows PowerShell oraz Command Prompt):
+1. Uruchom grę za pomocą komendy, będąc w głównym folderze (PasjansGigathon) (testowane w Windows PowerShell oraz Command Prompt):
 
 ``` bash
    py main.py

@@ -9,7 +9,6 @@ from textual.widgets import Label
 class TimeDisplay(Label):
     """A widget to display elapsed time."""
 
-    start_time: reactive[float] = reactive(monotonic)
     time = reactive(0.0)
     total = reactive(0.0)
 
@@ -20,7 +19,8 @@ class TimeDisplay(Label):
 
     def update_time(self) -> None:
         """Method to update time to current."""
-        self.time = self.total + (monotonic() - self.start_time)
+        from screens.game import Game
+        self.time = self.total + (monotonic() - Game.start_time)
 
     def watch_time(self, time: float) -> None:
         """Called when the time attribute changes."""
