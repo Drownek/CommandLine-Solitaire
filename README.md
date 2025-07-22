@@ -1,5 +1,9 @@
 # Solitaire
 
+## Screenshots
+<img width="879" height="539" alt="image" src="https://github.com/user-attachments/assets/2344115a-13de-41cb-9d0b-a1528f11af15" />
+<img width="1539" height="752" alt="image" src="https://github.com/user-attachments/assets/46cac2ad-f4d1-4e71-80eb-fa05556e1dee" />
+
 ## How to Run the Project
 
 To run the game, follow these steps:
