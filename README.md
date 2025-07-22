@@ -1,62 +1,61 @@
-# Pasjans Gigathon
+# Solitaire
 
-## Sposób uruchomienia projektu
+## How to Run the Project
 
-Aby uruchomić grę, wykonaj następujące kroki:
+To run the game, follow these steps:
 
-1. Upewnij się, że masz zainstalowanego Pythona w wersji 3.12 lub nowszej
-2. Zainstaluj wymagane pakiety:
+1. Make sure you have Python version 3.12 or newer installed.
+2. Install the required packages:
 
-``` bash
+```bash
     pip install -r .\requirements.txt
 ```
 
-1. Uruchom grę za pomocą komendy, będąc w głównym folderze (PasjansGigathon) (testowane w Windows PowerShell oraz Command Prompt):
+3. Run the game using the following command from the main folder (PasjansGigathon) (tested on Windows PowerShell and Command Prompt):
 
-``` bash
+```bash
    py main.py
 ```
 
-## Instrukcje rozgrywki
+## Gameplay Instructions
 
-### Klawisze
+### Keys
 
-- **n** - Nowa gra
-- **u** - Undo
-- **?** - Pomoc
-- **q** - Wyjście
-- **c** - Zmiana Motywu
+* **n** - New game
+* **u** - Undo
+* **?** - Help
+* **q** - Quit
+* **c** - Change Theme
 
-### Sterowanie
+### Controls
 
-- Kliknij na ukrytą kartę ze stosu, aby odkryć karty
-- Kliknij kartę z wierzchu, aby ją zaznaczyć.
-- Kliknij kartę spod wierzchu, aby zaznaczyć wszystkie karty od wierzchniej do obecnej
-- Gdy jest zaznaczona jedna karta, jeśli pozwalają na to reguły, można przenieść ją:
-    - do stosu końcowego, klikając na niego
-    - na inną kartę z innego stosu, klikając na wierzchnią kartę
-- Gdy jest zaznaczone wiele kart, można przenieść je jedynie do innej kolumny, klikając na wierzchnią kartę
+* Click a hidden card from the stack to reveal it.
+* Click the top card to select it.
+* Click a card below the top to select all cards from the top one to the selected one.
+* When one card is selected, if the rules allow, it can be moved:
 
-### Zasady gry
+  * to the foundation pile by clicking it
+  * to another card in a different stack by clicking the top card
+* When multiple cards are selected, they can only be moved to another column by clicking the top card of that column.
 
-Celem gry jest ułożenie wszystkich kart w czterech stosach finałowych według kolorów i wartości (od asa do króla). Karty
-można układać w kolumnach tablicy w malejącej kolejności i naprzemiennych kolorach.
+### Game Rules
 
-## Opis modułów i klas
+The goal of the game is to arrange all the cards into four foundation piles by suit and in ascending order (from Ace to King).
+Cards can be arranged in the tableau columns in descending order and alternating colors.
 
-### Główne klasy
+## Module and Class Description
 
-- **Game** - główna klasa aplikacji, zarządzająca całą grą
-- **GameGrid** - klasa odpowiedzialna za wyświetlanie planszy
-- **Card** - reprezentacja karty do gry
-- **CardHolder** - puste miejsce na kartę
-- **Tableau** - klasa reprezentująca główną tablicę gry
-- **Foundation** - klasa reprezentująca stosy finałowe
-- **StashWaste** - klasa reprezentująca talię i stos odrzuconych kart
+### Main Classes
 
-### System stylowania
+* **Game** – the main application class that manages the entire game
+* **GameGrid** – class responsible for displaying the board
+* **Card** – representation of a playing card
+* **CardHolder** – empty slot for a card
+* **Tableau** – class representing the main tableau of the game
+* **Foundation** – class representing the foundation piles
+* **StashWaste** – class representing the deck and discard pile
 
-Projekt wykorzystuje bibliotekę Textual CSS do stylowania interfejsu użytkownika. Plik `pasjans.tcss` zawiera definicje
-stylów dla wszystkich elementów interfejsu.
-Projekt został zaimplementowany jako aplikacja konsolowa z wykorzystaniem biblioteki Textual, która zapewnia
-interaktywny interfejs użytkownika w terminalu.
+### Styling System
+
+The project uses the Textual CSS library for styling the user interface. The `pasjans.tcss` file contains style definitions for all UI elements.
+The project is implemented as a console application using the Textual library, which provides an interactive terminal user interface.
